@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+<div th:insert="header :: topo"></div>
+<div class="mx-auto" style="width: 90%">
+
+	<head>
+		<title>Prova</title>
+	</head>
+
+	<body>
+		<form action="#" th:action="@{/pedidos/salvar}" th:object="${pedido}" method="post">
+			<input type="hidden" th:field="*{id}" />
+			<label>Descrição: </label>
+			<input type="text" th:field="*{descricao}" /><br />
+			<label>Valor: </label>
+			<input type="text" th:field="*{valor}" /><br />
+			
+			<button type="submit" class="btn btn-success"> Salvar </button>
+		</form>
+	</body>
+	<div th:insert="footer :: rodape"></div>
+
+</html>

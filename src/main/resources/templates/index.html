@@ -1,0 +1,27 @@
+<div th:insert="header :: topo"></div>
+
+<div class="mx-auto" style="width: 90%">
+
+	<div class="alert alert-secondary" role="alert">
+		Aluno: Gabriel Vinicius Mol Libaneo <br>
+		Matricula: 72100850
+	</div>
+	<div class="alert alert-primary" role="alert">
+		Primeira Prova de Sistema Web com SpringBoot / Desenvolvimento BackEnd
+	</div>
+
+	<nav aria-label="breadcrumb">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item active" aria-current="page">Novo</li>
+			<li class="breadcrumb-item"><a href="/vendedores/novovendedor">Novo Vendedor</a></li>
+			<li class="breadcrumb-item"><a href="/pedidos/novopedido">Novo Pedido</a></li>
+		</ol>
+
+		<nav aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item active" aria-current="page">Listar</li>
+				<li class="breadcrumb-item"><a href="/vendedores">Listar Vendedores</a></li>
+				<li class="breadcrumb-item"><a href="/pedidos">Listar Pedidos</a></li>
+			</ol>
+
+			<div th:insert="footer :: rodape"></div>
