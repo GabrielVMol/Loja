@@ -66,37 +66,6 @@ public class ProdutoResource {
 		}
 		return new ResponseEntity<Produto>(HttpStatus.NOT_FOUND);
 	}
-	
-	@GetMapping("/nome/{nome}")
-	@Operation(summary = "Achar o Produto por Nome", description = "Achar o Produto por Nome",
-	tags = {"Produto"}, responses = {
-			@ApiResponse(description = "Sucesso", responseCode = "200", 
-					content = @Content(schema = @Schema(implementation = Produto.class))),
-			@ApiResponse(description = "Sem Conteúdo", responseCode = "204", content = @Content),
-			@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
-			@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
-			@ApiResponse(description = "Não Encontrado", responseCode = "404", content = @Content),
-			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content)})
-	public ResponseEntity<Produto> getProdutoNome(@PathVariable("nome") String nome) {
-		Produto produto = produtoService.getProdutoNome(nome);
-		int id = produto.getId();
-		return getProduto(id);
-	}
-	
-	@GetMapping("/grupo/{grupo}")
-	@Operation(summary = "Achar o Produto por Grupo", description = "Achar o Produto por Grupo",
-	tags = {"Produto"}, responses = {
-			@ApiResponse(description = "Sucesso", responseCode = "200", 
-					content = @Content(schema = @Schema(implementation = Produto.class))),
-			@ApiResponse(description = "Sem Conteúdo", responseCode = "204", content = @Content),
-			@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
-			@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
-			@ApiResponse(description = "Não Encontrado", responseCode = "404", content = @Content),
-			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content)})
-	public ResponseEntity<List<Produto>> getProdutoGrupo(@PathVariable("grupo") String grupo) {
-		 return new ResponseEntity<List<Produto>>(produtoService.getProdutoGrupo(grupo), HttpStatus.OK);
-	}
-
 
 	@PostMapping("/salvar")
 	@Operation(summary = "Adcionar um Novo Produto", description = "Adcionar um Novo Produto",

@@ -66,22 +66,6 @@ public class VendedorResource {
 		}
 		return new ResponseEntity<Vendedor>(HttpStatus.NOT_FOUND);
 	}
-	
-	@GetMapping("/nome/{nome}")
-	@Operation(summary = "Achar o Vendedor por Nome", description = "Achar o Vendedor por Nome",
-	tags = {"Vendedor"}, responses = {
-			@ApiResponse(description = "Sucesso", responseCode = "200", 
-					content = @Content(schema = @Schema(implementation = Vendedor.class))),
-			@ApiResponse(description = "Sem Conteúdo", responseCode = "204", content = @Content),
-			@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
-			@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
-			@ApiResponse(description = "Não Encontrado", responseCode = "404", content = @Content),
-			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content)})
-	public ResponseEntity<Vendedor> getVendedorNome(@PathVariable("nome") String nome) {
-		Vendedor vendedor = vendedorService.getVendedorNome(nome);
-		int id = vendedor.getId();
-		return getVendedor(id);
-	}
 
 	@PostMapping("/salvar")
 	@Operation(summary = "Adcionar um Novo Vendedor", description = "Adcionar um Novo Vendedor",

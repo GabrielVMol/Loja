@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.loja.gabrielvinicius.excecoes.ExcecaoRecursoNaoEncontrado;
+import br.com.loja.gabrielvinicius.excecoes.ObjetoObrigatorioExcecaoNula;
 import br.com.loja.gabrielvinicius.models.Venda;
 import br.com.loja.gabrielvinicius.models.Vendedor;
 import br.com.loja.gabrielvinicius.repositories.VendaRepository;
@@ -21,6 +23,7 @@ public class VendedorService {
 	private VendaRepository vendaRepository;
 	
 	public void salvarVendedor(Vendedor vendedor) {
+		if (vendedor == null) throw new ObjetoObrigatorioExcecaoNula();
 		vendedorRepository.save(vendedor);
 	}
 	
@@ -29,17 +32,31 @@ public class VendedorService {
 	}
 
 	public Optional<Vendedor> getVendedor(int id){
+		vendedorRepository.findById(id)
+				.orElseThrow(() -> new ExcecaoRecursoNaoEncontrado("Nenhum registro encontrado para este ID!"));
 		return vendedorRepository.findById(id);
 	}
 	
 	public void excluirVendedor(Vendedor vendedor) {
+		if (vendedor == null) throw new ObjetoObrigatorioExcecaoNula();
 		vendedorRepository.delete(vendedor);
+	}
+	
+	public Vendedor updateVendedor(Vendedor vendedor) {
+
+		if (vendedor == null) throw new ObjetoObrigatorioExcecaoNula();		
+		
+		var entidade = vendedorRepository.findById(vendedor.getId())
+			.orElseThrow(() -> new ExcecaoRecursoNaoEncontrado("Nenhum registro encontrado para este ID!"));
+		vendedorRepository.save(entidade);
+			
+		return entidade;
 	}
 
     public boolean verificarCpf(Integer cpf) {
     	List<Vendedor> vendedores = listAll();
         for (Vendedor vendedor : vendedores) {
-            if (vendedor.getCpf() == cpf){
+            if (cpf.equals(vendedor.getCpf())){
                 return true; 
             }
         }
@@ -59,25 +76,22 @@ public class VendedorService {
     	return vendedor.getSalario() + (0.02 * totalVendas);
     }
 
-	public Vendedor getVendedorNome(String nome) {
-		List<Vendedor> vendedores = listAll();
-        for (Vendedor vendedor : vendedores) {
-        	if(vendedor.getNome() == nome) {
-        		return vendedor;
-        		}
-        	}
-		return null;
-	}
-
 	public Boolean validaVendedor(Integer cpf, Double salario) {
 		List<Vendedor> vendedores = listAll();
 		for (Vendedor v : vendedores) {
-			if (cpf == v.getCpf()) 
-				return true;
-		
-			if(salario < 0) 
+			if (cpf == v.getCpf() && salario < 0) 
 				return true;
 		}
 			return false;
 		}
+
+	public Boolean verificarEmail(String email) {
+		List<Vendedor> vendedores = listAll();
+        for (Vendedor vendedor : vendedores) {
+            if (vendedor.getEmail().equals(email)){
+                return true; 
+            }
+        }
+        return false;
+    }
 }

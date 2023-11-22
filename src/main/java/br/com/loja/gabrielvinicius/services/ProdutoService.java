@@ -14,7 +14,6 @@ public class ProdutoService {
 
 	@Autowired
 	private ProdutoRepository produtoRepository;
-	private List<Produto> grupos;
 
 	public void salvarProduto(Produto produto) {
 		produtoRepository.save(produto);
@@ -58,27 +57,6 @@ public class ProdutoService {
 		}
 		return false;
 	}
-	
-	public Produto getProdutoNome(String nome) {
-		List<Produto> produtos = listAll();
-        for (Produto produto : produtos) {
-        	if(produto.getNome() == nome) {
-        		return produto;
-        		}
-        	}
-		return null;
-	}
-	
-	public List<Produto> getProdutoGrupo(String grupo) {
-		grupos = null;	
-		List<Produto> produtos = listAll();
-        for (Produto produto : produtos) {
-        	if(produto.getGrupo() == grupo) {
-        		grupos.add(produto);
-        		}
-        	}
-		return grupos;
-	}
 
 	public void diminuirEstoque(int quantidade, List<Produto> produtos) {
 		for (Produto produto : produtos) {
@@ -90,14 +68,9 @@ public class ProdutoService {
 	public Boolean validaProduto(String nome, int id, Produto produto) {
 		List<Produto> produtos = listAll();
 		for (Produto p : produtos) {
-			if (nome == p.getNome()) 
-				return true;
-			
-			if(id == p.getId()) 
+			if (nome == p.getNome() && id == p.getId() && produto.getEstoque() < 0)
 				return true;
 		}
-			if (produto.getEstoque() < 0) 
-				return true;
 			return false;
 		}
 }
