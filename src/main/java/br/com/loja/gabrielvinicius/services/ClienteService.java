@@ -31,7 +31,7 @@ public class ClienteService {
 		return clienteRepository.findById(id);
 	}
 	
-	public Cliente updateCliente(Cliente cliente) { // Update: retorna a pessoa atualizada
+	public Cliente updateCliente(Cliente cliente) {
 
 		if (cliente == null) throw new ObjetoObrigatorioExcecaoNula();		
 		
@@ -43,6 +43,7 @@ public class ClienteService {
 	}
 	
 	public void excluirCliente(Cliente cliente) {
+		if (cliente == null) { throw new ObjetoObrigatorioExcecaoNula();}
 		clienteRepository.findById(cliente.getId())
 				.orElseThrow(() -> new ExcecaoRecursoNaoEncontrado("Nenhum registro encontrado para este ID!"));
 		clienteRepository.delete(cliente);

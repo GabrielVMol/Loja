@@ -78,7 +78,8 @@ public class ProdutoResource {
 	public ResponseEntity<Produto> salvarProduto(@RequestBody Produto produto) {
 		Integer id = produto.getId();
 		String nome = produto.getNome();
-		Boolean resposta = produtoService.validaProduto(nome, id, produto);
+		Integer estoque = produto.getEstoque();
+		Boolean resposta = produtoService.validaProduto(nome, id, estoque);
 	    
 	    if (resposta == true) {
 			return new ResponseEntity<Produto>(HttpStatus.BAD_REQUEST);

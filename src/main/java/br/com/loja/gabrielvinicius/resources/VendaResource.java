@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.loja.gabrielvinicius.models.Produto;
 import br.com.loja.gabrielvinicius.models.Venda;
 import br.com.loja.gabrielvinicius.services.ProdutoService;
 import br.com.loja.gabrielvinicius.services.VendaService;
@@ -82,16 +83,18 @@ public class VendaResource {
 	public ResponseEntity<Venda> salvarVenda(@RequestBody Venda venda) {
 	    Integer idCliente = venda.getCliente().getId();
 	    Integer idVendedor = venda.getVendedor().getId();
-	    Integer quantidade = venda.getQuantidade();
+
 	    Boolean data = venda.getDataVenda().after(venda.getDataGarantia());
-	    Boolean verificaQuantidade = vendaService.verificaQuantidade(venda.getProdutos(), venda);
+	    Boolean verificaQuantidade = vendaService.verificaQuantidade(venda.getProdutos() , venda);
 	  
 	    Boolean resposta = vendaService.validaVenda(idCliente, idVendedor, data, verificaQuantidade);
 	    
 	    if (resposta == true) {
 	        return new ResponseEntity<Venda>(HttpStatus.BAD_REQUEST);
 	    }
-		produtoService.diminuirEstoque(quantidade, venda.getProdutos());
+	    for (Produto produto : venda.getProdutos()) {
+	    	produtoService.diminuirEstoque(produto.getQuantidade(), produto);
+		}
 		vendaService.salvarVenda(venda);
 		return new ResponseEntity<Venda>(venda, HttpStatus.OK);
 	}

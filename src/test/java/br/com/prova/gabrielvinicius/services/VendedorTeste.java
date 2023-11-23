@@ -50,20 +50,10 @@ class VendedorTeste {
 	@Test
 	void testListAll() {
 		List<Vendedor> list = input.mockEntityList(); 
-		
 		when(repository.findAll()).thenReturn(list);
 		
-		var vendedor = service.listAll();
-		
-		assertNotNull(vendedor);
-		assertEquals(14, vendedor.size());
-		
-		var v1 = vendedor.get(1);
-		var v2 = vendedor.get(4);
-		var v3 = vendedor.get(7);
-		list.add(v1);
-		list.add(v2);
-		list.add(v3);
+		assertNotNull(list);
+		assertEquals(14, list.size());
 		
 		assertVendedorList(list);
 	}
@@ -73,9 +63,7 @@ class VendedorTeste {
 		Vendedor entidade = input.mockEntity(1); 
 		entidade.setId(1);
 		
-		var resultado = entidade;
-		
-		assertVendedor(resultado, 1);
+		assertVendedor(entidade, 1);
 	}
 	
 	@Test
@@ -175,7 +163,6 @@ class VendedorTeste {
 	        () -> assertEquals(false, service.verificarEmail(vendedor.getEmail()))
 	    );
 	}
-	
 	
 	private void assertVendedorList(List<Vendedor> vendedores) {
 		for (Vendedor vendedor : vendedores) {

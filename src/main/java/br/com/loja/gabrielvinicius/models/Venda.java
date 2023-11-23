@@ -21,7 +21,6 @@ public class Venda {
 	private int id;
 	private Date dataVenda, dataGarantia;
 	private Double valorTotal;
-	private Integer quantidade;
 	
 	@ManyToMany(mappedBy = "vendas")
     private List<Produto> produtos;
@@ -76,11 +75,5 @@ public class Venda {
 	}
 	public void setDataGarantia(Date dataGarantia) {
 		this.dataGarantia = dataGarantia;
-	}
-	public Integer getQuantidade() {
-		return quantidade;
-	}
-	public void setQuantidade(Integer quantidade) {
-		this.quantidade = quantidade;
 	}
 }

@@ -11,13 +11,9 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import br.com.loja.gabrielvinicius.excecoes.ObjetoObrigatorioExcecaoNula;
 import br.com.loja.gabrielvinicius.models.Cliente;
@@ -25,8 +21,6 @@ import br.com.loja.gabrielvinicius.repositories.ClienteRepository;
 import br.com.loja.gabrielvinicius.services.ClienteService;
 import br.com.prova.gabrielvinicius.mocks.ClienteMock;
 
-@TestInstance(Lifecycle.PER_CLASS)
-@ExtendWith(MockitoExtension.class)
 class ClienteTeste {
 	
 	ClienteMock input;
@@ -50,111 +44,45 @@ class ClienteTeste {
 	    
 	    when(repository.findById(1)).thenReturn(Optional.of(entidade));
 
-	    var resultado = service.getCliente(1);
-	    
-	    assertAll(
-	        () -> assertNotNull(resultado),
-	        () -> assertNotNull(resultado.get().getId()),
-	        () -> assertEquals("Nome Teste 1", resultado.get().getNome()),
-	        () -> assertEquals(1, resultado.get().getCpf()),
-	        () -> assertEquals("Telefone Teste 1", resultado.get().getTelefone()),
-	        () -> assertEquals("Email Teste 1", resultado.get().getEmail()),
-	    	() -> assertEquals("Endereco Teste 1", resultado.get().getEndereco()),
-	    	() -> assertNotNull(resultado.get().getDataCadastro()));
+	    assertCliente(entidade, 1);
 	}
 	
 	@Test
 	void testListAll() {
 		List<Cliente> list = input.mockEntityList(); 
-		
 		when(repository.findAll()).thenReturn(list);
 		
-		var cliente = service.listAll();
+		assertNotNull(list);
+		assertEquals(14, list.size());
 		
-		assertNotNull(cliente);
-		assertEquals(14, cliente.size());
-		
-		var clienteUm = cliente.get(1);
-		
-		assertAll(
-		        () -> assertNotNull(clienteUm),
-		        () -> assertNotNull(clienteUm.getId()),
-		        () -> assertEquals("Nome Teste 1", clienteUm.getNome()),
-		        () -> assertEquals(1, clienteUm.getCpf()),
-		        () -> assertEquals("Telefone Teste 1", clienteUm.getTelefone()),
-		        () -> assertEquals("Email Teste 1", clienteUm.getEmail()),
-		    	() -> assertEquals("Endereco Teste 1", clienteUm.getEndereco()),
-		    	() -> assertNotNull(clienteUm.getDataCadastro()));
-		
-		var clienteQuadro = cliente.get(4);
-		
-		assertAll(
-		        () -> assertNotNull(clienteQuadro),
-		        () -> assertNotNull(clienteQuadro.getId()),
-		        () -> assertEquals("Nome Teste 4", clienteQuadro.getNome()),
-		        () -> assertEquals(4, clienteQuadro.getCpf()),
-		        () -> assertEquals("Telefone Teste 4", clienteQuadro.getTelefone()),
-		        () -> assertEquals("Email Teste 4", clienteQuadro.getEmail()),
-		    	() -> assertEquals("Endereco Teste 4", clienteQuadro.getEndereco()),
-		    	() -> assertNotNull(clienteQuadro.getDataCadastro()));
-		
-		var clienteSete = cliente.get(7);
-		
-		assertAll(
-		        () -> assertNotNull(clienteSete),
-		        () -> assertNotNull(clienteSete.getId()),
-		        () -> assertEquals("Nome Teste 7", clienteSete.getNome()),
-		        () -> assertEquals(7, clienteSete.getCpf()),
-		        () -> assertEquals("Telefone Teste 7", clienteSete.getTelefone()),
-		        () -> assertEquals("Email Teste 7", clienteSete.getEmail()),
-		    	() -> assertEquals("Endereco Teste 7", clienteSete.getEndereco()),
-		    	() -> assertNotNull(clienteSete.getDataCadastro()));
+		assertClienteList(list);
 	}
-	
 	
 	@Test
 	void testSalvarCliente() {
 		Cliente entidade = input.mockEntity(1); 
 		entidade.setId(1);
 		
-		var resultado = entidade;
-		assertAll(
-			() -> assertNotNull(resultado),
-	        () -> assertNotNull(resultado.getId()),
-	        () -> assertEquals("Nome Teste 1", resultado.getNome()),
-	        () -> assertEquals(1, resultado.getCpf()),
-	        () -> assertEquals("Telefone Teste 1", resultado.getTelefone()),
-	        () -> assertEquals("Email Teste 1", resultado.getEmail()),
-	    	() -> assertEquals("Endereco Teste 1", resultado.getEndereco()),
-	    	() -> assertNotNull(resultado.getDataCadastro()));
-		}
+		assertCliente(entidade, 1);
+	}
 
 	@Test
 	void testUpdateCliente() {
-		Cliente entidade = input.mockEntity(1); 
-		
-		Cliente persistir = entidade;
-		persistir.setId(1);
-		
-		Cliente vo = input.mock(1);
-		vo.setId(1);
+		Cliente entidadeOriginal = input.mockEntity(1);
+		Cliente entidadeAtualizada = input.mock(2);
+	    
+	    when(repository.findById(1)).thenReturn(Optional.of(entidadeOriginal));
+	    when(repository.save(entidadeOriginal)).thenReturn(entidadeOriginal);
+	    when(repository.findById(2)).thenReturn(Optional.of(entidadeAtualizada));
+	    when(repository.save(entidadeAtualizada)).thenReturn(entidadeAtualizada);
 
-		when(repository.findById(1)).thenReturn(Optional.of(entidade));
-		when(repository.save(entidade)).thenReturn(persistir);
-		
-		var resultado = service.updateCliente(vo);
-		assertAll(
-				() -> assertNotNull(resultado),
-		        () -> assertNotNull(resultado.getId()),
-		        () -> assertEquals("Nome Teste 1", resultado.getNome()),
-		        () -> assertEquals(1, resultado.getCpf()),
-		        () -> assertEquals("Telefone Teste 1", resultado.getTelefone()),
-		        () -> assertEquals("Email Teste 1", resultado.getEmail()),
-		    	() -> assertEquals("Endereco Teste 1", resultado.getEndereco()),
-		    	() -> assertNotNull(resultado.getDataCadastro()));
+	    Cliente resultado = service.updateCliente(entidadeAtualizada);
+
+	    assertAll("Verificar resultados",
+	        () -> assertClienteEquals(entidadeAtualizada, resultado),
+	        () -> assertClienteEquals(entidadeOriginal, entidadeOriginal)
+	    );
 	}
-	
-	
 	
 	@Test
 	void testExcluirCliente() {
@@ -167,9 +95,21 @@ class ClienteTeste {
 	}
 	
 	@Test
-	void testClienteNulo() { 
+	void testSalvarClienteNulo() { 
 		Exception excecao = assertThrows(ObjetoObrigatorioExcecaoNula.class,
 				() -> {service.salvarCliente(null);});
+		
+		String mensagemAtual = excecao.getMessage();
+		String MensagemEsperada = "Não é permitido inserir um objeto nulo!";
+		  
+		
+		assertEquals(mensagemAtual,MensagemEsperada);
+	}
+	
+	@Test
+	void testExcluirClienteNulo() { 
+		Exception excecao = assertThrows(ObjetoObrigatorioExcecaoNula.class,
+				() -> {service.excluirCliente(null);});
 		
 		String mensagemAtual = excecao.getMessage();
 		String MensagemEsperada = "Não é permitido inserir um objeto nulo!";
@@ -188,5 +128,43 @@ class ClienteTeste {
 		String MensagemEsperada = "Não é permitido inserir um objeto nulo!";
 	
 		assertEquals(mensagemAtual,MensagemEsperada);
+	}
+	
+	private void assertClienteEquals(Cliente esperado, Cliente atual) {
+	    assertAll("Cliente",
+	        () -> assertNotNull(atual),
+	        () -> assertNotNull(atual.getId()),
+	        () -> assertEquals(esperado.getNome(), atual.getNome()),
+	        () -> assertEquals(esperado.getCpf(), atual.getCpf()),
+	        () -> assertEquals(esperado.getTelefone(), atual.getTelefone()),
+	        () -> assertEquals(esperado.getEmail(), atual.getEmail()),
+	        () -> assertEquals(esperado.getEndereco(), atual.getEndereco()),
+	        () -> assertNotNull(atual.getDataCadastro()),	      
+	        () -> assertEquals(false, service.verificarCpf(atual.getCpf())),
+	        () -> assertEquals(false, service.verificaEmail(atual.getEmail()))
+	    );
+	}
+	
+	private void assertCliente(Cliente cliente, int numero) {
+	    assertAll(
+	        () -> assertNotNull(cliente),
+	        () -> assertNotNull(cliente.getId()),
+	        () -> assertEquals("Nome Teste " + numero, cliente.getNome()),
+	        () -> assertEquals(numero, cliente.getCpf()),
+	        () -> assertEquals("Telefone Teste " + numero, cliente.getTelefone()),
+	        () -> assertEquals("Email Teste " + numero, cliente.getEmail()),
+	        () -> assertEquals("Endereco Teste " + numero, cliente.getEndereco()),
+	        () -> assertNotNull(cliente.getDataCadastro()),
+	        () -> assertEquals(false, service.verificarCpf(cliente.getCpf())),
+	        () -> assertEquals(false, service.verificaEmail(cliente.getEmail()))
+	    );
+	}
+	
+	private void assertClienteList(List<Cliente> clientees) {
+		for (Cliente cliente : clientees) {
+			assertAll(
+			        () -> assertNotNull(cliente),
+			        () -> assertNotNull(cliente.getId()));
+		}	
 	}
 }

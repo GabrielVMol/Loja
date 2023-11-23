@@ -20,7 +20,7 @@ public class Produto {
 	private int id;
 	private String nome, grupo, descricao;
 	private Double preco;
-	private Integer estoque;
+	private Integer estoque, quantidade;
 	
 	@ManyToMany
     @JoinTable(
@@ -65,5 +65,17 @@ public class Produto {
 	}
 	public void setEstoque(Integer estoque) {
 		this.estoque = estoque;
+	}
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
+	}
+	public List<Venda> getVendas() {
+		return vendas;
+	}
+	public void setVendas(List<Venda> vendas) {
+		this.vendas = vendas;
 	}
 }
