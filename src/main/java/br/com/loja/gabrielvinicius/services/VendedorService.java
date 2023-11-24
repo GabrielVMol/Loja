@@ -53,7 +53,7 @@ public class VendedorService {
 		return entidade;
 	}
 
-    public boolean verificarCpf(Integer cpf) {
+    public boolean verificaCpf(Integer cpf) {
     	List<Vendedor> vendedores = listAll();
         for (Vendedor vendedor : vendedores) {
             if (cpf.equals(vendedor.getCpf())){
@@ -78,20 +78,10 @@ public class VendedorService {
 
 	public Boolean validaVendedor(Integer cpf, Double salario) {
 		List<Vendedor> vendedores = listAll();
-		for (Vendedor v : vendedores) {
-			if (cpf == v.getCpf() && salario < 0) 
-				return true;
+		for (Vendedor vendedor : vendedores) {
+			if (cpf.equals(vendedor.getCpf()) || verificaSalario(salario)) 
+				return false;
 		}
-			return false;
-		}
-
-	public Boolean verificarEmail(String email) {
-		List<Vendedor> vendedores = listAll();
-        for (Vendedor vendedor : vendedores) {
-            if (vendedor.getEmail().equals(email)){
-                return true; 
-            }
-        }
-        return false;
-    }
+			return true;
+	}
 }

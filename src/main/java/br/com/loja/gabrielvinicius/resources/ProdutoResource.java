@@ -35,29 +35,25 @@ public class ProdutoResource {
 	private ProdutoService produtoService;
 
 	@GetMapping("")
-	@Operation(summary = "Achar todas os Produto", description = "Achar todas os Produto",
-	tags = {"Produto"}, responses = {
-			@ApiResponse(description = "Sucesso", responseCode = "200", 
-					content = {@Content(mediaType = "application/json", 
-					array = @ArraySchema(schema = @Schema(implementation = Produto.class)))}),
-			@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
-			@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
-			@ApiResponse(description = "Não Encontrado", responseCode = "404", content = @Content),
-			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content)})
+	@Operation(summary = "Achar todos os Produto", description = "Achar todas os Produto", tags = {
+			"Produto" }, responses = { @ApiResponse(description = "Sucesso", responseCode = "200", content = {
+					@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Produto.class))) }),
+					@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
+					@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
+					@ApiResponse(description = "Não Encontrado", responseCode = "404", content = @Content),
+					@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content) })
 	public ResponseEntity<List<Produto>> listAll() {
 		return new ResponseEntity<List<Produto>>(produtoService.listAll(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{codigo}")
-	@Operation(summary = "Achar o Produto", description = "Achar o Produto",
-	tags = {"Produto"}, responses = {
-			@ApiResponse(description = "Sucesso", responseCode = "200", 
-					content = @Content(schema = @Schema(implementation = Produto.class))),
+	@Operation(summary = "Achar o Produto", description = "Achar o Produto", tags = { "Produto" }, responses = {
+			@ApiResponse(description = "Sucesso", responseCode = "200", content = @Content(schema = @Schema(implementation = Produto.class))),
 			@ApiResponse(description = "Sem Conteúdo", responseCode = "204", content = @Content),
 			@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
 			@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
 			@ApiResponse(description = "Não Encontrado", responseCode = "404", content = @Content),
-			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content)})
+			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content) })
 	public ResponseEntity<Produto> getProduto(@PathVariable("codigo") int id) {
 		Optional<Produto> produto = produtoService.getProduto(id);
 
@@ -68,61 +64,54 @@ public class ProdutoResource {
 	}
 
 	@PostMapping("/salvar")
-	@Operation(summary = "Adcionar um Novo Produto", description = "Adcionar um Novo Produto",
-	tags = {"Produto"}, responses = {
-			@ApiResponse(description = "Sucesso", responseCode = "200", 
-					content = @Content(schema = @Schema(implementation = Produto.class))),
-			@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
-			@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
-			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content)})
+	@Operation(summary = "Adcionar um Novo Produto", description = "Adcionar um Novo Produto", tags = {
+			"Produto" }, responses = {
+					@ApiResponse(description = "Sucesso", responseCode = "200", content = @Content(schema = @Schema(implementation = Produto.class))),
+					@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
+					@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
+					@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content) })
 	public ResponseEntity<Produto> salvarProduto(@RequestBody Produto produto) {
-		Integer id = produto.getId();
-		String nome = produto.getNome();
-		Integer estoque = produto.getEstoque();
-		Boolean resposta = produtoService.validaProduto(nome, id, estoque);
-	    
-	    if (resposta == true) {
-			return new ResponseEntity<Produto>(HttpStatus.BAD_REQUEST);
-		}
-		produtoService.salvarProduto(produto);
-		return new ResponseEntity<Produto>(produto, HttpStatus.OK);
+		if (produtoService.validaProduto(produto.getEstoque(), produto.getPreco()) == true) {
+			produtoService.salvarProduto(produto);
+			return new ResponseEntity<>(produto, HttpStatus.OK);
+			}
+			return new ResponseEntity<Produto>(HttpStatus.NOT_FOUND);
 	}
 
 	@DeleteMapping("/excluir/{codigo}")
-	@Operation(summary = "Deletar Produto", description = "Deletar Produto",
-	tags = {"Produto"}, responses = {
+	@Operation(summary = "Deletar Produto", description = "Deletar Produto", tags = { "Produto" }, responses = {
 			@ApiResponse(description = "Sem Conteúdo", responseCode = "204", content = @Content),
 			@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
 			@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
 			@ApiResponse(description = "Não Encontrado", responseCode = "404", content = @Content),
-			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content)})
+			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content) })
 	public ResponseEntity<Produto> excluirProduto(@PathVariable("codigo") int codigo) {
 		Optional<Produto> produto = produtoService.getProduto(codigo);
 		Integer estoque = produto.get().getEstoque();
-		
+
 		if (produto.isPresent() && produtoService.verificaParaExcluir(estoque)) {
+			produtoService.atualizaProdutoExclusao(produto);
 			produtoService.excluirProduto(produto.get());
 			return new ResponseEntity<>(null, HttpStatus.OK);
 		}
 		return new ResponseEntity<Produto>(HttpStatus.NOT_FOUND);
 	}
-	
+
 	@PutMapping("/editar/{codigo}")
-	@Operation(summary = "Atualizar dados do Produto", description = "Atualizar dados do Produto",
-	tags = {"Produto"}, responses = {
-			@ApiResponse(description = "Atualizado", responseCode = "200", 
-					content = @Content(schema = @Schema(implementation = Produto.class))),
-			@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
-			@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
-			@ApiResponse(description = "Não Encontrado", responseCode = "404", content = @Content),
-			@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content)})
-	public ResponseEntity<Produto> updateProduto(@PathVariable("codigo") int codigo, @RequestBody Produto produto){
-		
+	@Operation(summary = "Atualizar dados do Produto", description = "Atualizar dados do Produto", tags = {
+			"Produto" }, responses = {
+					@ApiResponse(description = "Atualizado", responseCode = "200", content = @Content(schema = @Schema(implementation = Produto.class))),
+					@ApiResponse(description = "Falha na Requisição", responseCode = "400", content = @Content),
+					@ApiResponse(description = "Não Autorizado", responseCode = "401", content = @Content),
+					@ApiResponse(description = "Não Encontrado", responseCode = "404", content = @Content),
+					@ApiResponse(description = "Erro Interno", responseCode = "500", content = @Content) })
+	public ResponseEntity<Produto> updateProduto(@PathVariable("codigo") int codigo, @RequestBody Produto produto) {
+
 		Optional<Produto> optionalProduto = produtoService.getProduto(codigo);
-		
+
 		if (optionalProduto.isPresent()) {
 			Produto produtoExistente = optionalProduto.get();
-		
+
 			produtoExistente.setId(codigo);
 			produtoExistente.setNome(produto.getNome());
 			produtoExistente.setDescricao(produto.getDescricao());
@@ -130,7 +119,7 @@ public class ProdutoResource {
 			produtoExistente.setEstoque(produto.getEstoque());
 			produtoExistente.setGrupo(produto.getGrupo());
 			produtoService.salvarProduto(produtoExistente);
-			return new ResponseEntity<>(null, HttpStatus.OK);
+			return new ResponseEntity<>(produtoExistente, HttpStatus.OK);
 		}
 		return new ResponseEntity<Produto>(HttpStatus.NOT_FOUND);
 	}

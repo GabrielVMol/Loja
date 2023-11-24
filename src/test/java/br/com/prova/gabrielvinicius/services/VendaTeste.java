@@ -147,7 +147,7 @@ class VendaTeste {
 	        () -> assertNotNull(atual.getProdutos()),
 	        () -> assertNotNull(atual.getDataVenda()),
 	        () -> assertNotNull(atual.getDataGarantia()),
-	        () -> assertEquals(false, service.validaVenda(atual.getCliente().getId(), atual.getVendedor().getId(), atual.getDataVenda().before(atual.getDataGarantia()), service.verificaQuantidade(atual.getProdutos(), atual)))
+	        () -> assertEquals(true, service.validaVenda(atual.getCliente(), atual.getVendedor(), atual.getDataVenda().before(atual.getDataGarantia()), service.verificaQuantidade(atual.getProdutos(), atual), atual))
 	    	);
 	}
 	
@@ -160,7 +160,7 @@ class VendaTeste {
 	        () -> assertNotNull(venda.getProdutos()),
 	        () -> assertNotNull(venda.getDataVenda()),
 	        () -> assertNotNull(venda.getDataGarantia()),
-	        () -> assertEquals(false, service.validaVenda(venda.getCliente().getId(), venda.getVendedor().getId(), venda.getDataVenda().before(venda.getDataGarantia()), service.verificaQuantidade(venda.getProdutos(), venda)))
+	        () -> assertEquals(true, service.validaVenda(venda.getCliente(), venda.getVendedor(), venda.getDataVenda().before(venda.getDataGarantia()), service.verificaQuantidade(venda.getProdutos(), venda), venda))
 	    );
 	}
 	

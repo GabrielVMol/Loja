@@ -72,10 +72,4 @@ public class Produto {
 	public void setQuantidade(Integer quantidade) {
 		this.quantidade = quantidade;
 	}
-	public List<Venda> getVendas() {
-		return vendas;
-	}
-	public void setVendas(List<Venda> vendas) {
-		this.vendas = vendas;
-	}
 }

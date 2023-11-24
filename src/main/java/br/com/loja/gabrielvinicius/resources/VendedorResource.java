@@ -78,13 +78,13 @@ public class VendedorResource {
 	public ResponseEntity<Vendedor> salvarVendedor(@RequestBody Vendedor vendedor) {
 		Integer cpf = vendedor.getCpf();
 		Double salario = vendedor.getSalario();
-		Boolean resposta = vendedorService.validaVendedor(cpf, salario);
 		
-		if (resposta == true) {
-			return new ResponseEntity<Vendedor>(HttpStatus.BAD_REQUEST);
-		}
-		vendedorService.salvarVendedor(vendedor);
-		return new ResponseEntity<Vendedor>(vendedor, HttpStatus.OK);
+		if (vendedorService.validaVendedor(cpf, salario) == true) {
+			vendedorService.salvarVendedor(vendedor);
+			return new ResponseEntity<Vendedor>(vendedor, HttpStatus.OK);
+		}else
+		return new ResponseEntity<Vendedor>(HttpStatus.BAD_REQUEST);
+		
 	}
 
 	@DeleteMapping("/excluir/{codigo}")
@@ -128,7 +128,7 @@ public class VendedorResource {
 			vendedorExistente.setTelefone(vendedor.getTelefone());
 			vendedorExistente.setEndereco(vendedor.getEndereco());
 			vendedorService.salvarVendedor(vendedorExistente);
-			return new ResponseEntity<>(null, HttpStatus.OK);
+			return new ResponseEntity<>(vendedorExistente, HttpStatus.OK);
 		}
 		return new ResponseEntity<Vendedor>(HttpStatus.NOT_FOUND);
 	}

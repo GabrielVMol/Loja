@@ -140,9 +140,7 @@ class VendedorTeste {
 	        () -> assertNotNull(atual.getDataCadastro()),
 	        () -> assertEquals(esperado.getSetor(), atual.getSetor()),
 	        () -> assertEquals(esperado.getSalario(), atual.getSalario()),
-	        () -> assertEquals(false, service.verificaSalario(atual.getSalario())),
-	        () -> assertEquals(false, service.verificarCpf(atual.getCpf())),
-	        () -> assertEquals(false, service.verificarEmail(atual.getEmail()))
+	        () -> assertEquals(true, service.validaVendedor(atual.getCpf(), atual.getSalario()))
 	    );
 	}
 	
@@ -158,9 +156,7 @@ class VendedorTeste {
 	        () -> assertNotNull(vendedor.getDataCadastro()),
 	        () -> assertEquals("Setor Teste " + numero, vendedor.getSetor()),
 	        () -> assertEquals(numero, vendedor.getSalario()),
-	        () -> assertEquals(false, service.verificaSalario(vendedor.getSalario())),
-	        () -> assertEquals(false, service.verificarCpf(vendedor.getCpf())),
-	        () -> assertEquals(false, service.verificarEmail(vendedor.getEmail()))
+	        () -> assertEquals(true, service.validaVendedor(vendedor.getCpf(), vendedor.getSalario()))
 	    );
 	}
 	

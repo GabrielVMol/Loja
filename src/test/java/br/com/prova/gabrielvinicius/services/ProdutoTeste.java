@@ -140,7 +140,7 @@ class ProdutoTeste {
 	        () -> assertEquals(esperado.getPreco(), atual.getPreco()),
 	        () -> assertEquals(esperado.getEstoque(), atual.getEstoque()),
 	        () -> assertEquals(esperado.getQuantidade(), atual.getQuantidade()),
-	        () -> assertEquals(false, service.validaProduto(atual.getNome(), atual.getId(), atual.getEstoque()))
+	        () -> assertEquals(true, service.validaProduto(atual.getEstoque(), atual.getPreco()))
 	    );
 	}
 	
@@ -154,7 +154,7 @@ class ProdutoTeste {
 	        () -> assertEquals(numero, produto.getPreco()),
 	        () -> assertEquals(numero, produto.getEstoque()),
 	        () -> assertEquals(numero, produto.getQuantidade()),
-	        () -> assertEquals(false, service.validaProduto(produto.getNome(), produto.getId(), produto.getEstoque()))
+	        () -> assertEquals(true, service.validaProduto(produto.getEstoque(), produto.getPreco()))
 	    );
 	}
 	

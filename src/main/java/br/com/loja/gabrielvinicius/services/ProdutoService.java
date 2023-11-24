@@ -18,7 +18,8 @@ public class ProdutoService {
 	private ProdutoRepository produtoRepository;
 
 	public void salvarProduto(Produto produto) {
-		if (produto == null) throw new ObjetoObrigatorioExcecaoNula();
+		if (produto == null)
+			throw new ObjetoObrigatorioExcecaoNula();
 		produtoRepository.save(produto);
 	}
 
@@ -27,67 +28,71 @@ public class ProdutoService {
 	}
 
 	public Optional<Produto> getProduto(int id) {
-		if (produtoRepository.findById(id) == null) { throw new ObjetoObrigatorioExcecaoNula();}
+		if (produtoRepository.findById(id) == null) {
+			throw new ObjetoObrigatorioExcecaoNula();
+		}
 		produtoRepository.findById(id)
-		.orElseThrow(() -> new ExcecaoRecursoNaoEncontrado("Nenhum registro encontrado para este ID!"));
+				.orElseThrow(() -> new ExcecaoRecursoNaoEncontrado("Nenhum registro encontrado para este ID!"));
 		return produtoRepository.findById(id);
 	}
-	
-	
-	public Produto updateProduto(Produto produto) {
 
-		if (produto == null) throw new ObjetoObrigatorioExcecaoNula();		
-		
+	public Produto updateProduto(Produto produto) {
+		if (produto == null)
+			throw new ObjetoObrigatorioExcecaoNula();
+
 		var entidade = produtoRepository.findById(produto.getId())
-			.orElseThrow(() -> new ExcecaoRecursoNaoEncontrado("Nenhum registro encontrado para este ID!"));
+				.orElseThrow(() -> new ExcecaoRecursoNaoEncontrado("Nenhum registro encontrado para este ID!"));
 		produtoRepository.save(entidade);
-			
+
 		return entidade;
 	}
 
 	public void excluirProduto(Produto produto) {
-		if (produto == null) throw new ObjetoObrigatorioExcecaoNula();
+		if (produto == null)
+			throw new ObjetoObrigatorioExcecaoNula();
 		produtoRepository.delete(produto);
 	}
 
-	public boolean verificarNome(String nome) {
-		List<Produto> produtos = listAll();
-		for (Produto produto : produtos) {
-			if (produto.getNome().equals(nome)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean verificarId(int id) {
-    	List<Produto> produtos = listAll();
-        for (Produto produto : produtos) {
-            if (produto.getId() == id){
-                return true; 
-            }
-        }
-        return false;
-    }
-
 	public boolean verificaParaExcluir(Integer estoque) {
-		if (estoque > 0) {
+		if (estoque < 1) {
 			return true;
 		}
 		return false;
 	}
 
-	public void diminuirEstoque(int quantidade, Produto produto) {
-			Integer estoque = produto.getEstoque();
-            estoque -= quantidade;
+	public Boolean validaProduto(int estoque, Double preco) {
+		if (estoque >= 0 && preco > 0) {
+			return true;
+		}
+		return false;
 	}
 
-	public Boolean validaProduto(String nome, int id, int estoque) {
-		List<Produto> produtos = listAll();
-		for (Produto p : produtos) {
-			if (p.getNome() == nome && p.getId() == id  && p.getEstoque() < 0)
-				return true;
+	public void atualizaProduto(Produto produto) {
+		var estoque = produto.getEstoque() - produto.getQuantidade();
+		produto.setEstoque(estoque);
+		produtoRepository.save(produto);
+	}
+
+	public void atualizaProdutoExclusao(Optional<Produto> produto) {
+		var estoque = produto.get().getEstoque() + produto.get().getQuantidade();
+		produto.get().setEstoque(estoque);
+		produtoRepository.save(produto.get());
+
+	}
+
+	public void atualizaListaProdutoExclusao(List<Produto> produtos) {
+		for (Produto produto : produtos) {
+			var estoque = produto.getEstoque() + produto.getQuantidade();
+			produto.setEstoque(estoque);
+			produtoRepository.save(produto);
 		}
-			return false;
+	}
+
+	public void atualizaListaProduto(List<Produto> produtos) {
+		for (Produto produto : produtos) {
+			var estoque = produto.getEstoque() - produto.getQuantidade();
+			produto.setEstoque(estoque);
+			produtoRepository.save(produto);
 		}
+	}
 }

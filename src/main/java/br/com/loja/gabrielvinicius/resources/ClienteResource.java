@@ -79,14 +79,12 @@ public class ClienteResource {
 	public ResponseEntity<Cliente> salvarCliente(@RequestBody Cliente cliente) {	
 		Integer cpf = cliente.getCpf();
 		String email = cliente.getEmail();
-		boolean respostaEmail = clienteService.verificaEmail(email);
-		boolean respostaCpf = clienteService.verificarCpf(cpf);
 	    
-	    if (respostaCpf == true && respostaEmail == true) {
-			return new ResponseEntity<Cliente>(HttpStatus.BAD_REQUEST);
-		}
-		clienteService.salvarCliente(cliente);
-		return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
+	    if (clienteService.validaCliente(cpf,email) == true) {
+	    	clienteService.salvarCliente(cliente);
+			return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
+		}else
+		return new ResponseEntity<Cliente>(HttpStatus.BAD_REQUEST);
 	}
 
 	@DeleteMapping("/excluir/{codigo}")

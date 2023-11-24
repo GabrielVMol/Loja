@@ -140,8 +140,7 @@ class ClienteTeste {
 	        () -> assertEquals(esperado.getEmail(), atual.getEmail()),
 	        () -> assertEquals(esperado.getEndereco(), atual.getEndereco()),
 	        () -> assertNotNull(atual.getDataCadastro()),	      
-	        () -> assertEquals(false, service.verificarCpf(atual.getCpf())),
-	        () -> assertEquals(false, service.verificaEmail(atual.getEmail()))
+	        () -> assertEquals(true, service.validaCliente(atual.getCpf(), atual.getEmail()))
 	    );
 	}
 	
@@ -155,8 +154,7 @@ class ClienteTeste {
 	        () -> assertEquals("Email Teste " + numero, cliente.getEmail()),
 	        () -> assertEquals("Endereco Teste " + numero, cliente.getEndereco()),
 	        () -> assertNotNull(cliente.getDataCadastro()),
-	        () -> assertEquals(false, service.verificarCpf(cliente.getCpf())),
-	        () -> assertEquals(false, service.verificaEmail(cliente.getEmail()))
+	        () -> assertEquals(true, service.validaCliente(cliente.getCpf(), cliente.getEmail()))
 	    );
 	}
 	

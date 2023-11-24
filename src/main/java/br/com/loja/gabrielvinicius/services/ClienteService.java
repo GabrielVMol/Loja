@@ -49,23 +49,13 @@ public class ClienteService {
 		clienteRepository.delete(cliente);
 	}
 
-    public boolean verificarCpf(Integer cpf) {
-    	List<Cliente> clientes = listAll();
-        for (Cliente cliente : clientes) {
-            if (cliente.getCpf() == cpf){
-                return true; 
-            }
-        }
-        return false;
-    }
-
-	public boolean verificaEmail(String email) {
-		    List<Cliente> clientes = listAll();
-		    for (Cliente cliente : clientes) {
-		        if (cliente.getEmail().equals(email)) {
-		            return true;
-		        }
-		    }
-		    return false;
+	public boolean validaCliente(Integer cpf, String email) {
+		List<Cliente> clientes = listAll();
+		for (Cliente c: clientes) {
+			if(cpf.equals(c.getCpf()) || email.equals(c.getEmail())){
+				return false;
+			}
 		}
+		return true;
+	}
 }
